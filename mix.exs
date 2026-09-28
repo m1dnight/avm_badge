@@ -21,10 +21,16 @@ defmodule Badge.MixProject do
       test_paths: test_paths(Mix.target()),
       deps: deps(),
       # ExAtomVM writes no application.bin, and NervesHub cannot identify
-      # firmware without one. The flash task bypasses the packbeam alias.
+      # firmware without one. The flash task bypasses the packbeam alias, so
+      # the image is packed and measured first: esptool writes past a slot.
       aliases: [
         "atomvm.packbeam": ["atomvm.application_bin", "atomvm.packbeam"],
-        "atomvm.esp32.flash": ["atomvm.application_bin", "atomvm.esp32.flash"]
+        "atomvm.esp32.flash": [
+          "atomvm.application_bin",
+          "atomvm.packbeam",
+          "badge.fit",
+          "atomvm.esp32.flash"
+        ]
       ],
       atomvm: [
         start: Badge,

@@ -10,6 +10,7 @@ defmodule Badge.Page.Share do
 
   use Badge.Page
 
+  alias Badge.Art
   alias Badge.Font
   alias Badge.Icons
   alias Badge.Identity
@@ -123,7 +124,8 @@ defmodule Badge.Page.Share do
       opened: nil,
       id: nil,
       chip: "",
-      loaded: false
+      loaded: false,
+      art: nil
     }
   end
 
@@ -149,7 +151,8 @@ defmodule Badge.Page.Share do
         stored: peers,
         id: id,
         chip: Identity.format(id),
-        loaded: true
+        loaded: true,
+        art: Art.image(@art, Theme.glyph())
     })
   end
 
@@ -333,7 +336,7 @@ defmodule Badge.Page.Share do
   def render(%{mode: :detail, opened: %{profile: profile}}), do: detail_screen(profile)
 
   def render(%{screen: @share_screen} = state) do
-    [art()] ++ share_screen(state) ++ dots(@share_screen)
+    art_items(state) ++ share_screen(state) ++ dots(@share_screen)
   end
 
   def render(%{screen: @sharing_screen} = state),
@@ -511,10 +514,13 @@ defmodule Badge.Page.Share do
   defp badge_icon(nil, _y), do: []
   defp badge_icon(icon, y), do: [Icons.item(icon, @margin, y)]
 
-  defp art do
-    {width, _height} = Icons.size(@art)
+  # Nothing on a badge without an assets partition.
+  defp art_items(%{art: nil}), do: []
 
-    Icons.item(@art, div(Theme.width() - width, 2), @art_y)
+  defp art_items(%{art: image}) do
+    {width, _height} = Art.size(@art)
+
+    [Art.item(div(Theme.width() - width * Art.scale(), 2), @art_y, Theme.bg(), image)]
   end
 
   # Before anyone has been heard there is nothing to report but the count.

@@ -67,7 +67,7 @@ defmodule Badge.PagesTest do
     end
 
     test "an empty slot is nil, not a crash" do
-      assert Pages.for_key(:diamond, 1) == nil
+      assert Pages.for_key(:square, 2) == nil
       assert Pages.for_key(:square, 99) == nil
     end
   end

@@ -70,6 +70,37 @@ defmodule Badge.Sim.Fakes do
           _, d -> d
         end
       ),
+      fake(
+        Badge.Mesh.Link,
+        fn :status, d ->
+          %{
+            state: Map.get(d, :state, :off),
+            node: Map.get(d, :node),
+            reason: nil,
+            routed: Map.get(d, :routed, 0),
+            peers: Map.get(d, :peers, [])
+          }
+        end,
+        fn
+          :open, d ->
+            Map.merge(d, %{
+              state: :up,
+              node: "4E43443A",
+              routed: 3,
+              peers: [
+                %{id: "A1B2C3D4", address: "192.168.1.23", port: 4573, phase: :active},
+                %{id: "5E6F7081", address: "192.168.1.24", port: 4573, phase: :joining},
+                %{id: "92A3B4C5", address: "192.168.1.25", port: 4573, phase: :potential}
+              ]
+            })
+
+          :close, d ->
+            Map.merge(d, %{state: :off, node: nil, routed: 0, peers: []})
+
+          _, d ->
+            d
+        end
+      ),
       fake(Badge.Ir.Link, fn _, _ -> :ok end)
     ]
   end

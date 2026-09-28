@@ -75,7 +75,9 @@ defmodule PackagingTest do
       Enum.map(0..15, &"assets/priv/rickroll/frame#{String.pad_leading("#{&1}", 2, "0")}@48x48.rgba") ++
         ["assets/priv/fonts/dogica.uf",
          "assets/priv/fonts/pixel_operator.uf",
-         "assets/priv/fonts/w95fa.uf"]
+         "assets/priv/fonts/w95fa.uf",
+         "assets/priv/art/badge_share@72x32.ffffff.rgba",
+         "assets/priv/art/badge_share@72x32.000000.rgba"]
 
     for name <- expected do
       assert String.contains?(first, name), "archive is missing #{name}"

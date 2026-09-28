@@ -11,8 +11,8 @@ Setup, flashing and the ESP-IDF workflow are in `README.md`.
   `:regenerates_assets` because they rewrite tracked files
 - `mix atomvm.check` — the real compatibility gate, and it runs during flash.
   Host tests passing proves nothing
-- `mix atomvm.esp32.flash` — builds, checks, flashes. The port auto-detects;
-  never pass `--port`
+- `mix atomvm.esp32.flash` — builds, checks, measures against the slot
+  (`mix badge.fit`), flashes. The port auto-detects; never pass `--port`
 - `iex -S mix` — the firmware on fake hardware, panel at
   http://localhost:3240. `mix sim.check` renders every page once, headless
 - Two mix targets: `:host` is the simulator (`sim/lib` plus
@@ -40,8 +40,10 @@ Setup, flashing and the ESP-IDF workflow are in `README.md`.
 - Two packbeam slots: `main.avm` at `0x2B8000` and `alt.avm` at `0x35C000`,
   656K each. NervesHub writes whichever is not running and flips
   `atomvm`/`boot_path` in NVS
-- `assets.avm` at `0x278000` holds the rickroll frames, the `.uf` fonts and
-  the splash logo, mounted by `Badge.start/0`. `tools/flashassets.sh` packs
+- `assets.avm` at `0x278000` holds the rickroll frames, the `.uf` fonts, the
+  splash logo and the Share page art (`Badge.Art`: half size, one file per
+  glyph tint, drawn at 2x, since two tints of a 144x64 picture baked into
+  `main.avm` cost 72K), mounted by `Badge.start/0`. `tools/flashassets.sh` packs
   and writes it; it is **not** updated over the air
 - `python3 tools/check_partitions.py <partitions.csv> [label=path ...]` fails
   if an artifact outgrows its partition
